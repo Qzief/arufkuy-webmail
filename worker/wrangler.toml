@@ -1,0 +1,13 @@
+name = "arufkuy-webmail"
+main = "src/index.ts"
+compatibility_date = "2026-05-31"
+
+[vars]
+ALLOWED_EMAIL_DOMAINS = "z.org"
+CORS_ORIGIN = "http://localhost:5000,http://127.0.0.1:5000,http://localhost:5500,http://127.0.0.1:5500,https://mail.arufkuy.me"
+SESSION_TTL_DAYS = "7"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "arufkuy-webmail"
+database_id = "00d49aa8-1e5b-48fc-87a4-76ae8f784323"

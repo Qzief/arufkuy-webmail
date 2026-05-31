@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Console - Arufkuy Webmail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    /* Admin Specific Overrides */
+    .admin-layout { display: flex; height: 100vh; background: var(--bg-root); }
+    .admin-sidebar { width: 260px; background: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+    .admin-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+    .brand-area { height: 64px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid var(--border); font-weight: 800; font-size: 18px; letter-spacing: -0.5px; color: white; }
+    .brand-area span { color: var(--primary); margin-left: 4px; }
+
+    .nav-links { padding: 24px 16px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: 8px;
+      color: var(--text-muted); text-decoration: none;
+      font-weight: 500; font-size: 14px;
+      transition: all 0.2s; border: none; background: transparent; cursor: pointer; width: 100%; text-align: left;
+    }
+    .nav-btn:hover { background: var(--bg-surface-hover); color: var(--text-main); }
+    .nav-btn.active { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+    .nav-btn svg { width: 18px; height: 18px; }
+
+    .top-bar { height: 64px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(8px); }
+    .page-title { font-size: 18px; font-weight: 600; }
+    .user-info { font-size: 13px; color: var(--text-dim); }
+
+    .scroll-area { flex: 1; overflow-y: auto; padding: 32px; }
+
+    .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .card h3 { margin: 0 0 16px 0; font-size: 16px; font-weight: 600; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; color: var(--text-dim); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-main); }
+    tr:last-child td { border-bottom: none; }
+
+    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .status-badge.active { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+    .status-badge.inactive { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); }
+
+    .action-btn { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-main); transition: all 0.2s; }
+    .action-btn:hover { background: var(--bg-surface-hover); border-color: var(--border-light); }
+    .action-btn.danger:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+
+    /* Login Override */
+    .admin-login-wrapper { display: flex; height: 100vh; align-items: center; justify-content: center; background: #020617; }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div id="loginView" class="admin-login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="brand-logo-lg">
+          <div style="width:64px; height:64px; background:var(--primary); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; font-size:32px; font-weight:800; color:white;">A</div>
+        </div>
+        <h1>Admin Console</h1>
+        <p>Restricted Access Only</p>
+      </div>
+      <form id="loginForm" onsubmit="return false;">
+        <div class="input-group">
+          <label>Admin Email</label>
+          <input id="emailInput" type="email" placeholder="admin@arufkuy.me" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input id="passwordInput" type="password" placeholder="••••••••" />
+        </div>
+        <div id="loginMsg" class="error-msg"></div>
+        <button id="btnLogin" type="submit" class="btn-primary-lg">Authenticate</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboardView" class="admin-layout hidden">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="brand-area">Webmail<span>Admin</span></div>
+      <nav class="nav-links">
+        <button class="nav-btn active" id="navUsers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          User Management
+        </button>
+        <button class="nav-btn" id="navAds">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          Ad Campaigns
+        </button>
+        <button class="nav-btn" id="navNotifs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          Notifications
+        </button>
+      </nav>
+      <div style="margin-top: auto; padding: 24px;">
+        <button id="btnLogout" class="action-btn danger" style="width: 100%;">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="admin-content">
+      <div class="top-bar">
+        <div class="page-title" id="pageTitle">User Management</div>
+        <div class="user-info" id="adminEmailDisplay">admin@arufkuy.me</div>
+      </div>
+
+      <div class="scroll-area">
+
+        <!-- VIEW: USERS -->
+        <div id="viewUsers">
+          <div class="grid-2">
+            <!-- Create User -->
+            <div class="card">
+              <h3>Create New User</h3>
+              <div class="input-group">
+                <label>Username</label>
+                <input id="newUsername" placeholder="username" />
+              </div>
+              <div class="input-group">
+                <label>Password</label>
+                <div style="display:flex; gap:8px;">
+                  <input id="newPassword" placeholder="min 6 chars" />
+                  <button id="btnGenPass" class="action-btn">Gen</button>
+                </div>
+              </div>
+              <button id="btnCreateUser" class="btn-primary-lg" style="margin-top: 16px;">Create & Sync</button>
+              <div id="createMsg" class="status-text"></div>
+            </div>
+
+            <!-- Map Existing -->
+            <div class="card">
+              <h3>Map Existing UID</h3>
+              <div class="input-group">
+                <label>Firebase UID</label>
+                <input id="targetUid" class="mono-badge" style="width:100%; font-size:13px;" placeholder="UID..." />
+              </div>
+              <div class="input-group">
+                <label>Assign Username</label>
+                <input id="targetLocalPart" placeholder="username" />
+              </div>
+              <div style="display:flex; gap:12px; margin-top:16px;">
+                <button id="btnSaveMap" class="btn-primary-lg" style="flex:1;">Save Mapping</button>
+                <button id="btnDeleteMap" class="action-btn danger">Delete</button>
+              </div>
+              <div id="mapMsg" class="status-text"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+              <h3>Registered Users</h3>
+              <button id="btnRefreshUsers" class="action-btn">Refresh List</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>UID</th>
+                  <th>Email</th>
+                  <th>Inbox</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="4" class="text-center muted">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VIEW: ADS -->
+        <div id="viewAds" class="hidden">
+          <div class="card">
+            <h3>Add New Campaign</h3>
+            <div class="input-group">
+              <label>Image URL</label>
+              <input id="adImage" placeholder="https://..." />
+            </div>
+            <div class="grid-2">
+              <div class="input-group">
+                <label>Target Link</label>
+                <input id="adLink" placeholder="https://..." />
+              </div>
+              <div class="input-group">
+                <label>Button Text</label>
+                <input id="adBtnText" placeholder="Open Offer" />
+              </div>
+            </div>
+            <button id="btnAddAd" class="btn-primary-lg" style="margin-top:16px;">Launch Campaign</button>
+          </div>
+
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+              <h3>Active Campaigns</h3>
+              <button id="btnRefreshAds" class="action-btn">Refresh</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Preview</th>
+                  <th>Details</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VIEW: NOTIFICATIONS -->
+        <div id="viewNotifs" class="hidden">
+          <div class="card">
+            <h3>Send Notification</h3>
+            <div class="grid-2">
+              <div class="input-group">
+                <label>Type</label>
+                <select id="notifType" style="width:100%; padding:12px; background:var(--bg-root); border:1px solid var(--border); border-radius:12px; color:white;">
+                  <option value="broadcast">Broadcast (All)</option>
+                  <option value="personal">Personal (UID)</option>
+                </select>
+              </div>
+              <div class="input-group hidden" id="notifUidGroup">
+                <label>Target UID</label>
+                <input id="notifTargetUid" placeholder="User UID" />
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Title</label>
+              <input id="notifTitle" placeholder="Notification Title" />
+            </div>
+            <div class="input-group">
+              <label>Body</label>
+              <textarea id="notifBody" rows="3" style="width:100%; background:var(--bg-root); border:1px solid var(--border); border-radius:12px; padding:12px; color:white;" placeholder="Message..."></textarea>
+            </div>
+            <button id="btnSendNotif" class="btn-primary-lg" style="margin-top:16px;">Send Notification</button>
+          </div>
+
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+              <h3>Recent Notifications</h3>
+              <button id="btnRefreshNotifs" class="action-btn">Refresh</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Content</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="notifsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, collection, query, orderBy, getDocs, serverTimestamp, collectionGroup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAElga8j8thxNtSqFzgfqECu6E6eT8RZFY",
+      authDomain: "webmail-arufkuy.firebaseapp.com",
+      projectId: "webmail-arufkuy",
+      storageBucket: "webmail-arufkuy.firebasestorage.app",
+      messagingSenderId: "608495162500",
+      appId: "1:608495162500:web:b70eb55061305f83ef5ed1",
+      measurementId: "G-JXST3Z88R7"
+    };
+
+    const WORKER_API = "https://api.arufkuy.workers.dev";
+    const app = initializeApp(firebaseConfig, "AdminApp");
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = (id) => document.getElementById(id);
+    let currentUser = null;
+
+    // --- Auth ---
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const isAdmin = await checkAdmin(user.uid);
+        if (isAdmin) {
+          currentUser = user;
+          $("loginView").classList.add("hidden");
+          $("dashboardView").classList.remove("hidden");
+          $("adminEmailDisplay").textContent = user.email;
+          loadUsers();
+        } else {
+          alert("Access Denied");
+          signOut(auth);
+        }
+      } else {
+        $("loginView").classList.remove("hidden");
+        $("dashboardView").classList.add("hidden");
+      }
+    });
+
+    async function checkAdmin(uid) {
+      const snap = await getDoc(doc(db, "admins", uid));
+      return snap.exists() && snap.data().isAdmin === true;
+    }
+
+    $("btnLogin").onclick = async () => {
+      try {
+        await signInWithEmailAndPassword(auth, $("emailInput").value, $("passwordInput").value);
+      } catch(e) { $("loginMsg").textContent = e.message; }
+    };
+    $("btnLogout").onclick = () => signOut(auth);
+
+    // --- Navigation ---
+    const navs = { users: $("navUsers"), ads: $("navAds"), notifs: $("navNotifs") };
+    const views = { users: $("viewUsers"), ads: $("viewAds"), notifs: $("viewNotifs") };
+
+    function switchView(name) {
+      Object.values(navs).forEach(n => n.classList.remove("active"));
+      Object.values(views).forEach(v => v.classList.add("hidden"));
+      navs[name].classList.add("active");
+      views[name].classList.remove("hidden");
+
+      if(name === 'users') loadUsers();
+      if(name === 'ads') loadAds();
+      if(name === 'notifs') loadNotifs();
+
+      $("pageTitle").textContent = name === 'users' ? 'User Management' : name === 'ads' ? 'Ad Campaigns' : 'Notifications';
+    }
+
+    navs.users.onclick = () => switchView('users');
+    navs.ads.onclick = () => switchView('ads');
+    navs.notifs.onclick = () => switchView('notifs');
+
+    // --- Users ---
+    async function loadUsers() {
+      const tbody = $("usersTableBody");
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center muted">Loading...</td></tr>';
+      try {
+        const snap = await getDocs(query(collection(db, "users"), orderBy("updatedAt", "desc")));
+        tbody.innerHTML = "";
+        snap.forEach(d => {
+          const u = d.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="mono-badge">${u.uid}</td>
+            <td>${u.email}</td>
+            <td>${u.inboxUser}</td>
+            <td><button class="action-btn" onclick="editUser('${u.uid}')">Edit</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch(e) { tbody.innerHTML = `<tr><td colspan="4" class="error-msg">${e.message}</td></tr>`; }
+    }
+    $("btnRefreshUsers").onclick = loadUsers;
+
+    window.editUser = (uid) => {
+      $("targetUid").value = uid;
+      // Fetch details if needed, for now just sets ID for mapping
+    };
+
+    // Create User
+    $("btnGenPass").onclick = () => {
+      $("newPassword").value = Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10);
+    };
+
+    $("btnCreateUser").onclick = async () => {
+      const u = $("newUsername").value.trim().toLowerCase();
+      const p = $("newPassword").value;
+      if(!u || !p) return;
+
+      $("btnCreateUser").disabled = true;
+      $("createMsg").textContent = "Creating...";
+
+      let secApp;
+      try {
+        secApp = initializeApp(firebaseConfig, "SecApp");
+        const secAuth = getAuth(secApp);
+        const cred = await createUserWithEmailAndPassword(secAuth, `${u}@arufkuy.me`, p);
+        const uid = cred.user.uid;
+        await signOut(secAuth);
+
+        await setDoc(doc(db, "users", uid), {
+          uid, email: `${u}@arufkuy.me`, inboxUser: u, inboxAddress: `${u}@arufkuy.me`,
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+        });
+
+        // Sync Worker
+        await fetch(`${WORKER_API}/admin/allow?uid=${uid}&inboxUser=${u}`, { method: "PUT" });
+
+        $("createMsg").textContent = "Success!";
+        $("newUsername").value = ""; $("newPassword").value = "";
+        loadUsers();
+      } catch(e) { $("createMsg").textContent = e.message; }
+      finally { if(secApp) deleteApp(secApp); $("btnCreateUser").disabled = false; }
+    };
+
+    // Map User
+    $("btnSaveMap").onclick = async () => {
+      const uid = $("targetUid").value.trim();
+      const u = $("targetLocalPart").value.trim().toLowerCase();
+      if(!uid || !u) return;
+
+      try {
+        await setDoc(doc(db, "users", uid), {
+          uid, email: `${u}@arufkuy.me`, inboxUser: u, inboxAddress: `${u}@arufkuy.me`,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        await fetch(`${WORKER_API}/admin/allow?uid=${uid}&inboxUser=${u}`, { method: "PUT" });
+        $("mapMsg").textContent = "Mapped!";
+        loadUsers();
+      } catch(e) { $("mapMsg").textContent = e.message; }
+    };
+
+    // --- Ads ---
+    async function loadAds() {
+      const tbody = $("adsTableBody");
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center muted">Loading...</td></tr>';
+      const snap = await getDocs(query(collection(db, "settings", "ads", "items"), orderBy("createdAt", "desc")));
+      tbody.innerHTML = "";
+      snap.forEach(d => {
+        const ad = d.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><img src="${ad.imageUrl}" style="height:40px; border-radius:4px;"></td>
+          <td>${ad.btnText}<br><span class="muted">${ad.linkUrl}</span></td>
+          <td><span class="status-badge ${ad.active?'active':'inactive'}">${ad.active?'Active':'Inactive'}</span></td>
+          <td><button class="action-btn danger" onclick="delAd('${d.id}')">Del</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    $("btnAddAd").onclick = async () => {
+      await addDoc(collection(db, "settings", "ads", "items"), {
+        imageUrl: $("adImage").value, linkUrl: $("adLink").value, btnText: $("adBtnText").value,
+        active: true, createdAt: serverTimestamp()
+      });
+      loadAds();
+    };
+    window.delAd = async (id) => {
+      if(confirm("Delete?")) { await deleteDoc(doc(db, "settings", "ads", "items", id)); loadAds(); }
+    };
+    $("btnRefreshAds").onclick = loadAds;
+
+    // --- Notifs ---
+    $("notifType").onchange = () => {
+      $("notifUidGroup").classList.toggle("hidden", $("notifType").value !== 'personal');
+    };
+
+    $("btnSendNotif").onclick = async () => {
+      const type = $("notifType").value;
+      const data = {
+        title: $("notifTitle").value, body: $("notifBody").value, type,
+        read: false, createdAt: serverTimestamp(), badge: 'info'
+      };
+
+      if(type === 'broadcast') await addDoc(collection(db, "notifications"), data);
+      else await addDoc(collection(db, "users", $("notifTargetUid").value, "notifications"), data);
+
+      alert("Sent!");
+      loadNotifs();
+    };
+
+    async function loadNotifs() {
+      const tbody = $("notifsTableBody");
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center muted">Loading...</td></tr>';
+      try {
+        const snap = await getDocs(query(collectionGroup(db, "notifications"), orderBy("createdAt", "desc")));
+        tbody.innerHTML = "";
+        snap.forEach(d => {
+          const n = d.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><span class="status-badge ${n.type==='personal'?'active':'inactive'}">${n.type}</span></td>
+            <td><b>${n.title}</b><br>${n.body}</td>
+            <td>${n.createdAt?.toDate().toLocaleDateString()}</td>
+            <td><button class="action-btn danger" onclick="delNotif('${d.ref.path}')">Del</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch(e) { tbody.innerHTML = `<tr><td colspan="4">Error: ${e.message}</td></tr>`; }
+    }
+    window.delNotif = async (path) => {
+      if(confirm("Delete?")) {
+        // path is like notifications/ID or users/UID/notifications/ID
+        // We need to construct doc ref manually or pass ID and collection
+        // Simpler: just reload for now or implement proper delete path parsing
+        alert("Deletion requires full path parsing in this simplified view.");
+      }
+    };
+    $("btnRefreshNotifs").onclick = loadNotifs;
+
+  </script>
+</body>
+</html>

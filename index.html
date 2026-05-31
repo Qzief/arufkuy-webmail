@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Webmail - Arufkuy</title>
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div id="loginView" class="login-wrapper">
+    <div class="login-bg-grid"></div>
+    <div class="login-glow"></div>
+
+    <div class="login-card">
+      <div class="login-header">
+        <div class="brand-logo-lg">
+          <img src="logo.png" alt="Logo" />
+        </div>
+        <h1>Welcome back</h1>
+        <p>Enter your credentials to access your secure inbox.</p>
+      </div>
+
+      <div class="login-form">
+        <div class="input-group">
+          <label>Email Address</label>
+          <input id="emailInput" type="email" placeholder="name@arufkuy.me" autocomplete="username" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input id="passwordInput" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <div id="loginError" class="error-msg"></div>
+
+        <button id="btnLogin" class="btn-primary-lg">Sign In</button>
+
+        <div class="divider"><span>or continue with</span></div>
+
+        <a href="https://discord.com/invite/CkmzkYXqZ5" target="_blank" class="btn-secondary-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.086 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.086 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z" />
+          </svg>
+          Join Community
+        </a>
+      </div>
+    </div>
+    <div class="login-footer">
+      &copy; Arufkuy Webmail Client. Secure & Encrypted.
+    </div>
+  </div>
+
+  <!-- APP VIEW -->
+  <div id="appView" class="app-layout hidden">
+
+    <!-- 1. Navigation Rail (Leftmost) -->
+    <nav class="nav-rail panel-base">
+      <div class="rail-logo">
+        <img src="logo.png" alt="W" />
+      </div>
+      <button class="rail-item active" title="Inbox">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </button>
+      <button class="rail-item" title="Drafts (Coming Soon)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      </button>
+
+      <div class="rail-bottom">
+        <div class="rail-divider"></div>
+        <button id="btnNotif" class="rail-item relative" title="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span id="notifBadge" class="dot-badge hidden"></span>
+        </button>
+
+        <div class="user-profile-trigger" id="btnUserAvatar">
+          <div class="avatar-circle" id="avatarLetter">?</div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 2. Sidebar (Message List) -->
+    <aside class="sidebar-panel panel-base" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Inbox</h2>
+        <div class="sidebar-actions">
+          <button id="btnRefresh" class="icon-btn" title="Refresh">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          </button>
+          <button id="btnAuto" class="icon-btn" title="Auto Refresh">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-container">
+        <div class="search-wrapper">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="searchBox" type="text" placeholder="Search messages..." />
+        </div>
+      </div>
+
+      <div id="msgList" class="message-list">
+        <!-- Items injected here -->
+      </div>
+
+      <div class="sidebar-footer">
+        <span id="inboxAddress" class="mono-badge">loading...</span>
+      </div>
+    </aside>
+
+    <!-- 3. Main Content (Reading Pane) -->
+    <main class="content-panel panel-base">
+
+      <!-- Mobile Header (Only visible on mobile) -->
+      <div class="mobile-header">
+        <button id="btnBackList" class="icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <span class="mobile-title">Reading</span>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+        <h3>No Message Selected</h3>
+        <p>Select an email from the list to view its contents.</p>
+      </div>
+
+      <!-- Message Content -->
+      <div id="msgContent" class="message-view hidden">
+        <div class="message-header">
+          <div class="header-top">
+            <h1 id="rSubject">Subject Line</h1>
+            <div class="header-actions">
+              <div class="view-toggle">
+                <button id="btnViewHtml" class="toggle-btn active">HTML</button>
+                <button id="btnViewText" class="toggle-btn">TXT</button>
+                <button id="btnViewJson" class="toggle-btn">JSON</button>
+              </div>
+              <button id="btnDelete" class="btn-danger-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="header-meta">
+            <div class="sender-info">
+              <div id="rAvatar" class="sender-avatar">A</div>
+              <div class="sender-text">
+                <div class="sender-name" id="rFrom">Sender Name</div>
+                <div class="sender-to" id="rTo">to me</div>
+              </div>
+            </div>
+            <div class="meta-date" id="rDate">Today, 10:00 AM</div>
+          </div>
+        </div>
+
+        <div class="message-body-container">
+          <div id="rBody" class="full-h"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Popups / Dropdowns -->
+
+    <!-- User Menu -->
+    <div id="userDropdown" class="dropdown-menu hidden">
+      <div class="dropdown-header">
+        <div id="menuUserName" class="dd-name">User</div>
+        <div id="menuUserEmail" class="dd-email">user@example.com</div>
+      </div>
+      <button id="btnMenuSettings" class="dropdown-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Change Password
+      </button>
+      <div class="dropdown-divider"></div>
+      <button id="btnMenuLogout" class="dropdown-item danger">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Sign Out
+      </button>
+    </div>
+
+    <!-- Notifications Dropdown -->
+    <div id="notifDropdown" class="dropdown-menu notif-menu hidden">
+      <div class="dropdown-header">Notifications</div>
+      <div id="notifList" class="notif-list">
+        <div class="notif-empty">No new notifications</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Change Password</h3>
+        <button id="btnCloseSettings" class="close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="muted" style="font-size:12px; color:var(--txt-tertiary); margin-bottom:12px;">Update your account password securely.</p>
+        <div class="form-stack">
+          <input id="setCurrPass" type="password" placeholder="Current Password" />
+          <input id="setNewPass" type="password" placeholder="New Password" />
+          <input id="setConfPass" type="password" placeholder="Confirm New Password" />
+        </div>
+        <div id="setMsg" class="status-text"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveSettings" class="btn-primary-lg full-width">Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ad Modal -->
+  <div id="adModal" class="ad-overlay">
+    <div class="ad-card">
+      <div class="ad-badge">Sponsored</div>
+      <button id="btnCloseAd" class="ad-close">×</button>
+      <div class="ad-image-container">
+        <img id="adImg" src="" alt="Ad" />
+      </div>
+      <div class="ad-content">
+        <a id="adLink" href="#" target="_blank" class="btn-primary-lg full-width">Open Offer</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logic -->
+  <script type="module">
+    const WORKER_API = window.WEBMAIL_API_BASE || "https://arufkuy-webmail.arufcuy.workers.dev";
+
+    // State
+    let inboxUser = "";
+    let inboxAddress = "";
+    let messagesCache = [];
+    let selectedMessageId = null;
+    let autoTimer = null;
+    let currentViewMode = "html";
+
+    // DOM
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      loginView: $("loginView"),
+      appView: $("appView"),
+      emailInput: $("emailInput"),
+      passwordInput: $("passwordInput"),
+      btnLogin: $("btnLogin"),
+      loginError: $("loginError"),
+
+      // Nav & Sidebar
+      sidebar: $("sidebar"),
+      inboxAddress: $("inboxAddress"),
+      msgList: $("msgList"),
+      searchBox: $("searchBox"),
+      btnRefresh: $("btnRefresh"),
+      btnAuto: $("btnAuto"),
+
+      // Content
+      emptyState: $("emptyState"),
+      msgContent: $("msgContent"),
+      rSubject: $("rSubject"),
+      rFrom: $("rFrom"),
+      rTo: $("rTo"),
+      rDate: $("rDate"),
+      rBody: $("rBody"),
+      rAvatar: $("rAvatar"),
+      btnDelete: $("btnDelete"),
+
+      // View Toggles
+      btnViewHtml: $("btnViewHtml"),
+      btnViewText: $("btnViewText"),
+      btnViewJson: $("btnViewJson"),
+      formatBtns: [ $("btnViewHtml"), $("btnViewText"), $("btnViewJson") ],
+
+      // Mobile
+      btnBackList: $("btnBackList"),
+
+      // User Menu
+      btnUserAvatar: $("btnUserAvatar"),
+      avatarLetter: $("avatarLetter"),
+      userDropdown: $("userDropdown"),
+      menuUserName: $("menuUserName"),
+      menuUserEmail: $("menuUserEmail"),
+      btnMenuSettings: $("btnMenuSettings"),
+      btnMenuLogout: $("btnMenuLogout"),
+
+      // Notifications
+      btnNotif: $("btnNotif"),
+      notifBadge: $("notifBadge"),
+      notifDropdown: $("notifDropdown"),
+      notifList: $("notifList"),
+
+      // Settings Modal
+      settingsModal: $("settingsModal"),
+      setCurrPass: $("setCurrPass"),
+      setNewPass: $("setNewPass"),
+      setConfPass: $("setConfPass"),
+      setMsg: $("setMsg"),
+      btnCloseSettings: $("btnCloseSettings"),
+      btnSaveSettings: $("btnSaveSettings"),
+
+      // Ads
+      adModal: $("adModal"),
+      adImg: $("adImg"),
+      adLink: $("adLink"),
+      btnCloseAd: $("btnCloseAd")
+    };
+
+    // --- Auth ---
+    function setIdentity(email) {
+      inboxAddress = email;
+      inboxUser = (email.split("@")[0] || "").toLowerCase();
+    }
+
+    async function login() {
+      els.loginError.textContent = "";
+      els.btnLogin.textContent = "Authenticating...";
+      els.btnLogin.disabled = true;
+
+      try {
+        await api("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({
+            email: els.emailInput.value.trim(),
+            password: els.passwordInput.value
+          })
+        });
+        const me = await api("/api/me");
+        setIdentity(me.email);
+        initApp();
+      } catch (e) {
+        els.loginError.textContent = e.message || "Invalid email or password.";
+        els.btnLogin.disabled = false;
+        els.btnLogin.textContent = "Sign In";
+      }
+    }
+
+    async function logout() {
+      try {
+        await api("/api/auth/logout", { method: "POST" });
+      } catch (_) {}
+      clearSessionState();
+      location.reload();
+    }
+
+    function initApp() {
+      els.loginView.classList.add("hidden");
+      els.appView.classList.remove("hidden");
+
+      els.avatarLetter.textContent = (inboxUser || "?")[0].toUpperCase();
+      els.menuUserName.textContent = inboxUser;
+      els.menuUserEmail.textContent = inboxAddress;
+      els.inboxAddress.textContent = inboxAddress;
+
+      loadInbox();
+      renderNotificationsPlaceholder();
+    }
+
+    // --- API ---
+    async function api(path, options = {}) {
+      const init = {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        ...options
+      };
+      const res = await fetch(`${WORKER_API}${path}`, init);
+      if (res.status === 401) {
+        clearSessionState();
+        throw new Error("Sesi Anda sudah berakhir. Silakan login lagi.");
+      }
+
+      const data = await res.json().catch(() => ({ ok: false, error: "Invalid server response" }));
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || `API Error: ${res.status}`);
+      }
+      return data.data;
+    }
+
+    function clearSessionState() {
+      inboxUser = "";
+      inboxAddress = "";
+      messagesCache = [];
+      selectedMessageId = null;
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+      els.btnAuto.classList.remove("active");
+      localStorage.removeItem("readMessages");
+    }
+
+    async function bootstrapSession() {
+      try {
+        const me = await api("/api/me", { method: "GET" });
+        setIdentity(me.email);
+        initApp();
+      } catch (_) {
+        els.loginView.classList.remove("hidden");
+        els.appView.classList.add("hidden");
+      }
+    }
+
+    // --- Inbox ---
+    async function loadInbox(silent = false) {
+      if (!silent) els.msgList.innerHTML = '<div class="empty-state" style="font-size:12px;">Loading messages...</div>';
+
+      try {
+        const data = await api("/api/mail/inbox?limit=20");
+        messagesCache = data.messages || [];
+        renderList();
+      } catch (e) {
+        if (!silent) els.msgList.innerHTML = `<div class="error-msg">Error: ${e.message}</div>`;
+      }
+    }
+
+    function renderList() {
+      const q = els.searchBox.value.toLowerCase();
+      const list = messagesCache.filter(m =>
+        !q || ((m.subject || "") + (m.from || "") + (m.preview || "")).toLowerCase().includes(q)
+      );
+
+      els.msgList.innerHTML = "";
+      if (list.length === 0) {
+        els.msgList.innerHTML = '<div class="empty-state" style="font-size:12px;">No messages found</div>';
+        return;
+      }
+
+      const readMessages = JSON.parse(localStorage.getItem('readMessages') || '[]');
+
+      list.forEach(m => {
+        const el = document.createElement("div");
+        const isRead = m.seen || readMessages.includes(m.uid);
+        const isActive = selectedMessageId === m.uid;
+
+        el.className = `msg-card ${isActive ? 'active' : ''} ${!isRead ? 'unread' : ''}`;
+        el.onclick = () => openMessage(m.uid);
+
+        const date = new Date(m.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+        el.innerHTML = `
+          <div class="msg-card-top">
+            <span class="msg-from">${esc(m.from)}</span>
+            <span class="msg-time">${date}</span>
+          </div>
+          <div class="msg-subject">${esc(m.subject || '(No Subject)')}</div>
+          <div class="msg-snippet">${esc(m.preview || '')}</div>
+        `;
+        els.msgList.appendChild(el);
+      });
+    }
+
+    // --- Message View ---
+    async function openMessage(id) {
+      selectedMessageId = id;
+
+      const readMessages = JSON.parse(localStorage.getItem('readMessages') || '[]');
+      if (!readMessages.includes(id)) {
+        readMessages.push(id);
+        localStorage.setItem('readMessages', JSON.stringify(readMessages));
+      }
+      renderList();
+
+      // Mobile View Logic
+      if (window.innerWidth <= 768) {
+        els.appView.classList.add("mobile-reading");
+        window.history.pushState({ view: 'message', id: id }, "", "#msg-" + id);
+      }
+
+      els.emptyState.classList.add("hidden");
+      els.msgContent.classList.remove("hidden");
+      els.rBody.innerHTML = '<div class="empty-state" style="font-size:12px;">Loading content...</div>';
+
+      try {
+        const msg = await api(`/api/mail/message?id=${encodeURIComponent(id)}`);
+
+        els.rSubject.textContent = msg.subject || "(No Subject)";
+        els.rFrom.textContent = msg.from;
+        els.rTo.textContent = `to ${msg.to}`;
+        els.rDate.textContent = new Date(msg.date).toLocaleString();
+        els.rAvatar.textContent = (msg.from || "?")[0].toUpperCase();
+
+        renderBody(msg);
+      } catch (e) {
+        els.rBody.innerHTML = `<div class="error-msg">Failed to load: ${e.message}</div>`;
+      }
+    }
+
+    function renderBody(msg) {
+      els.rBody.innerHTML = "";
+
+      // Update toggle buttons
+      els.formatBtns.forEach(b => b.classList.remove("active"));
+      if (currentViewMode === 'html') els.btnViewHtml.classList.add("active");
+      if (currentViewMode === 'text') els.btnViewText.classList.add("active");
+      if (currentViewMode === 'json') els.btnViewJson.classList.add("active");
+
+      if (currentViewMode === "json") {
+        const pre = document.createElement("pre");
+        pre.className = "code-view";
+        pre.textContent = JSON.stringify(msg, null, 2);
+        els.rBody.appendChild(pre);
+        return;
+      }
+
+      if (currentViewMode === "text") {
+        const pre = document.createElement("pre");
+        pre.className = "text-view";
+        pre.textContent = msg.text || "(No text content)";
+        els.rBody.appendChild(pre);
+        return;
+      }
+
+      // HTML Mode
+      const iframe = document.createElement("iframe");
+      iframe.className = "html-frame";
+      els.rBody.appendChild(iframe);
+
+      const doc = iframe.contentWindow.document;
+      doc.open();
+
+      let content = msg.html || "";
+      if (!content) {
+        let text = (msg.text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        text = text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;*]*[-A-Z0-9+&@#\/%=~_|*])/ig, '<a href="$1" target="_blank">$1</a>');
+        content = `<body style="font-family:sans-serif;padding:20px;color:#333;line-height:1.6;">${text.replace(/\n/g, "<br>")}</body>`;
+      }
+
+      // Inject styles to iframe
+      content += `
+        <style>
+          html, body { margin:0; padding:0; width: 100%; overflow-x: hidden; }
+          body { padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1e293b; box-sizing: border-box; }
+          a { color: #2563eb; word-break: break-all; }
+          img { max-width: 100%; height: auto; }
+          pre { white-space: pre-wrap; word-wrap: break-word; }
+          table { max-width: 100%; display: block; overflow-x: auto; }
+          ::-webkit-scrollbar { width: 6px; height: 6px; }
+          ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        </style>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            var links = document.getElementsByTagName('a');
+            for (var i = 0; i < links.length; i++) links[i].setAttribute('target', '_blank');
+          });
+        <\/script>
+      `;
+
+      doc.write(content);
+      doc.close();
+    }
+
+    async function deleteMessage() {
+      if (!selectedMessageId || !confirm("Delete this message?")) return;
+      try {
+        await api(`/api/mail/message?id=${encodeURIComponent(selectedMessageId)}`, { method: "DELETE" });
+        selectedMessageId = null;
+        goBackToList();
+        els.msgContent.classList.add("hidden");
+        els.emptyState.classList.remove("hidden");
+        loadInbox(true);
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    // --- Notifications ---
+    function renderNotificationsPlaceholder() {
+      els.notifBadge.classList.add("hidden");
+      els.notifList.innerHTML = '<div class="notif-empty">Notifications are not connected in this deployment</div>';
+    }
+
+    // --- Ads ---
+    // --- Event Listeners ---
+    els.btnLogin.onclick = login;
+    els.btnMenuLogout.onclick = logout;
+    els.searchBox.oninput = renderList;
+    els.btnRefresh.onclick = () => loadInbox();
+    els.btnDelete.onclick = deleteMessage;
+
+    // View Modes
+    const setView = (mode) => {
+      currentViewMode = mode;
+      if (selectedMessageId) openMessage(selectedMessageId);
+    };
+    els.btnViewHtml.onclick = () => setView("html");
+    els.btnViewText.onclick = () => setView("text");
+    els.btnViewJson.onclick = () => setView("json");
+
+    // Auto Refresh
+    els.btnAuto.onclick = () => {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        els.btnAuto.classList.remove("active");
+      } else {
+        autoTimer = setInterval(() => loadInbox(true), 5000);
+        els.btnAuto.classList.add("active");
+        loadInbox(true);
+      }
+    };
+
+    // Dropdowns
+    const toggleDropdown = (el) => {
+      el.classList.toggle("hidden");
+    };
+    els.btnUserAvatar.onclick = (e) => { e.stopPropagation(); toggleDropdown(els.userDropdown); els.notifDropdown.classList.add("hidden"); };
+    els.btnNotif.onclick = (e) => { e.stopPropagation(); toggleDropdown(els.notifDropdown); els.userDropdown.classList.add("hidden"); };
+    document.onclick = () => {
+      els.userDropdown.classList.add("hidden");
+      els.notifDropdown.classList.add("hidden");
+    };
+
+    // Settings
+    els.btnMenuSettings.onclick = () => { els.settingsModal.classList.remove("hidden"); };
+    els.btnCloseSettings.onclick = () => { els.settingsModal.classList.add("hidden"); };
+    els.btnSaveSettings.onclick = async () => {
+      els.setMsg.textContent = "Password change is not available from this web client yet.";
+    };
+
+    // Mobile Back
+    function goBackToList() {
+      els.appView.classList.remove("mobile-reading");
+    }
+    els.btnBackList.onclick = () => {
+      if (window.history.state?.view === 'message') window.history.back();
+      else goBackToList();
+    };
+    window.onpopstate = (e) => { if (!e.state) goBackToList(); };
+
+    // Ad Close
+    els.btnCloseAd.onclick = () => els.adModal.classList.remove("visible");
+
+    // Session bootstrap
+    bootstrapSession();
+
+    // Utils
+    function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function timeAgo(d) {
+      const s = Math.floor((new Date() - d) / 1000);
+      if (s < 60) return "now";
+      if (s < 3600) return Math.floor(s/60) + "m";
+      if (s < 86400) return Math.floor(s/3600) + "h";
+      return Math.floor(s/86400) + "d";
+    }
+
+    // Auto-fill
+    els.emailInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text').trim();
+      if (text.includes(':')) {
+        const [u, ...p] = text.split(':');
+        els.emailInput.value = u.trim();
+        els.passwordInput.value = p.join(':').trim();
+        els.btnLogin.focus();
+      } else {
+        document.execCommand('insertText', false, text);
+      }
+    });
+  </script>
+</body>
+</html>
