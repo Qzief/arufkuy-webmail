@@ -20,7 +20,7 @@ export async function createSession(env: Env, email: string, password: string, i
     .run();
 
   return {
-    cookie: serializeSessionCookie(sessionId, expiresAt),
+    cookie: serializeSessionCookie(sessionId, expiresAt, env),
     sessionId,
   };
 }
@@ -79,8 +79,8 @@ export async function requireSession(request: Request, env: Env): Promise<{ sess
   };
 }
 
-export function getLogoutCookie() {
-  return `${SESSION_COOKIE}=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`;
+export function getLogoutCookie(env: Env) {
+  return `${SESSION_COOKIE}=; HttpOnly; Secure; SameSite=${getSameSite(env)}; Path=/; Max-Age=0`;
 }
 
 export async function consumeRateLimit(env: Env, key: string, limit: number, windowSeconds: number) {
@@ -112,9 +112,16 @@ export async function buildRateKey(prefix: string, request: Request, sessionId?:
   return sha256Hex(base);
 }
 
-function serializeSessionCookie(sessionId: string, expiresAt: number) {
+function serializeSessionCookie(sessionId: string, expiresAt: number, env: Env) {
   const maxAge = Math.max(expiresAt - Math.floor(Date.now() / 1000), 0);
-  return `${SESSION_COOKIE}=${sessionId}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${maxAge}`;
+  return `${SESSION_COOKIE}=${sessionId}; HttpOnly; Secure; SameSite=${getSameSite(env)}; Path=/; Max-Age=${maxAge}`;
+}
+
+function getSameSite(env: Env) {
+  const configured = (env.COOKIE_SAME_SITE || "Lax").trim().toLowerCase();
+  if (configured === "none") return "None";
+  if (configured === "strict") return "Strict";
+  return "Lax";
 }
 
 function getSessionIdFromCookie(request: Request): string | null {

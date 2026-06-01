@@ -7,6 +7,7 @@ export interface Env {
   ALLOWED_EMAIL_DOMAINS?: string;
   CORS_ORIGIN?: string;
   SESSION_TTL_DAYS?: string;
+  COOKIE_SAME_SITE?: string;
 }
 
 export interface SessionData {

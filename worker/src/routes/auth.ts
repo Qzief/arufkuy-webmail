@@ -63,6 +63,6 @@ async function logout(request: Request, env: Env) {
 
   await destroySession(env, sessionId);
   return jsonOk(request, env, { loggedOut: true }, 200, {
-    "Set-Cookie": getLogoutCookie(),
+    "Set-Cookie": getLogoutCookie(env),
   });
 }
